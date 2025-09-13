@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>ECU System</title>
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='style.css') }}"
+        />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <div class="navbar">
+            <button>Tên NSX</button>
+            <button>Feedback</button>
+            <button>Help</button>
+            <button>Setting</button>
+            <button>About System</button>
+        </div>
+
+        <div>
+            <div class="container">
+                <!-- Left (Dashboards) -->
+                <div class="left">
+                    <div class="card top" onclick="openModal('stats')">
+                        <h2>📈 Vehicle Statistics</h2>
+                    </div>
+                    <div class="bottom">
+                        <div class="card" onclick="openModal('alerts')">
+                            <h2>⚠️ Alerts</h2>
+                        </div>
+                        <div class="card" onclick="openModal('maintenance')">
+                            <h2>🛠️ Maintenance</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right (System Info) -->
+                <div class="right">
+                    <h1>🚘 ECU System</h1>
+                    <p class="description">
+                        Tích hợp AI, thông báo đẩy, thời gian thực, giao diện
+                        thân thiện.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Fullscreen Modal -->
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="modal-title"></h2>
+                        <span class="close" onclick="closeModal()"
+                            >&times;</span
+                        >
+                    </div>
+                    <div class="modal-body" id="modal-body">Loading...</div>
+                    <!-- Chỗ hiển thị chart -->
+                    <canvas
+                        id="statsChart"
+                        width="400"
+                        height="200"
+                        style="margin-top: 20px; display: none"
+                    ></canvas>
+                </div>
+            </div>
+        </div>
+        <script src="{{ url_for('static', filename='logic.js') }}"></script>
+    </body>
+</html>
