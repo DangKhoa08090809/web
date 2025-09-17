@@ -92,8 +92,13 @@ function openModal(type) {
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false, // 🔥 Cho phép canvas full container
                     plugins: {
                         legend: { display: true },
+                    },
+                    scales: {
+                        x: { ticks: { color: "#fff" } },
+                        y: { ticks: { color: "#fff" } },
                     },
                 },
             });

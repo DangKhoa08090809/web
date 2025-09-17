@@ -1,39 +1,103 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>ECU System</title>
-        <link rel="stylesheet" href="test.css" />
+        <title>{{ metric|capitalize }} Chart</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            body {
+                background: #1e1e2f;
+                color: white;
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+            }
+            #chart-container {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            canvas {
+                max-width: 95%;
+                max-height: 85%;
+            }
+            .back-btn {
+                margin-bottom: 15px;
+                padding: 10px 20px;
+                border: none;
+                background: #ffd369;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: bold;
+            }
+            .back-btn:hover {
+                background: #ffb347;
+            }
+        </style>
     </head>
     <body>
-        <!-- Top Menu -->
-        <div class="navbar">
-            <button>Tên NSX</button>
-            <button>Feedback</button>
-            <button>Help</button>
-            <button>Setting</button>
-            <button>About System</button>
+        <button class="back-btn" onclick="window.location.href='/'">
+            ⬅ Back
+        </button>
+        <h2>{{ metric|capitalize }} over time</h2>
+        <div id="chart-container">
+            <canvas id="metricChart"></canvas>
         </div>
 
-        <!-- Main Layout -->
-        <div class="container">
-            <!-- Left (Dashboards) -->
-            <div class="left">
-                <div class="card statistic">Statistic</div>
-                <div class="bottom-cards">
-                    <div class="card small-card">Alerts</div>
-                    <div class="card small-card">Maintenance</div>
-                </div>
-            </div>
+        <script>
+            let historyData = { labels: [], values: [] };
+            let chartInstance = null;
 
-            <!-- Right (System Info) -->
-            <div class="right">
-                <h1>HỆ THỐNG GIÁM SÁT XE MÁY</h1>
-                <p>
-                    Tích hợp AI, thông báo đẩy, thời gian thực,<br />
-                    giao diện thân thiện.
-                </p>
-            </div>
-        </div>
+            async function fetchData() {
+                let res = await fetch("/analyze");
+                let data = await res.json();
+                if (data.error) return;
+
+                let now = new Date().toLocaleTimeString();
+                historyData.labels.push(now);
+                historyData.values.push(data["{{ metric }}"]);
+
+                if (historyData.labels.length > 20) {
+                    historyData.labels.shift();
+                    historyData.values.shift();
+                }
+
+                if (!chartInstance) {
+                    chartInstance = new Chart(
+                        document.getElementById("metricChart"),
+                        {
+                            type: "line",
+                            data: {
+                                labels: historyData.labels,
+                                datasets: [
+                                    {
+                                        label: "{{ metric|capitalize }}",
+                                        data: historyData.values,
+                                        borderColor: "red",
+                                        borderWidth: 2,
+                                        tension: 0.3,
+                                    },
+                                ],
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                            },
+                        }
+                    );
+                } else {
+                    chartInstance.data.labels = historyData.labels;
+                    chartInstance.data.datasets[0].data = historyData.values;
+                    chartInstance.update();
+                }
+            }
+
+            setInterval(fetchData, 5000);
+            fetchData();
+        </script>
     </body>
 </html>
