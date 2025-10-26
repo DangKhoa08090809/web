@@ -1,0 +1,255 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 20px;
+}
+
+/* --- Top Navigation --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    background: #fff;
+    padding: 15px 20px;
+    border-bottom: 2px solid #ddd;
+}
+
+.navbar button {
+    padding: 10px 20px;
+    border: 2px solid #333;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.navbar button:hover {
+    background: #f0f0f0;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.text {
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 30px;
+}
+
+/* Left side (dashboards) */
+.left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Right = description */
+.description {
+    flex: 1;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Cards giữ nguyên style của bạn */
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100px;
+}
+.card:hover {
+    transform: scale(1.02);
+}
+
+.top {
+    flex: 0.75;
+    min-height: 175px;
+}
+.bottom {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+}
+.bottom .card {
+    flex: 1;
+}
+
+h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+/* Right side (title + description) */
+.right {
+    flex: 1;
+    padding-left: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.right h1 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.right p {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* --- Fullscreen Modal styles --- */
+.modal {
+    display: none; /* ban đầu phải ẩn */
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(3px);
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #1e1e2f;
+    border-radius: 16px;
+    width: 90%;
+    height: 90%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #444;
+    padding-bottom: 10px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #ffd369;
+}
+
+.close {
+    font-size: 28px;
+    cursor: pointer;
+    color: #ffd369;
+}
+.close:hover {
+    color: #ff5c5c;
+}
+
+.modal-body {
+    flex: 1;
+    margin-top: 20px;
+    font-size: 16px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-y: auto;
+}
+
+.chart-container {
+    width: 100%;
+    height: 50vh; /* chart chiếm 60% chiều cao modal */
+    margin-top: 20px;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.chat-box {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    border-top: 1px solid #666;
+    padding-top: 10px;
+    height: 250px;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #fff;
+}
+
+.chat-message {
+    margin: 6px 0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 80%;
+}
+
+.chat-message.user {
+    background: #007bff;
+    align-self: flex-end;
+    color: white;
+}
+
+.chat-message.bot {
+    background: #444;
+    align-self: flex-start;
+}
+
+.chat-input-container {
+    display: flex;
+    margin-top: 10px;
+    gap: 10px;
+}
+
+.chat-input-container input {
+    flex-grow: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: #222;
+    color: white;
+}
+
+.chat-input-container button {
+    background: #007bff;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.chat-input-container button:hover {
+    background: #0056b3;
+}
