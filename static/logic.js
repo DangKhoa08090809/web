@@ -148,7 +148,7 @@ function closeModal() {
 }
 
 // ⚙️ Chat Function
-function sendMessage() {
+async function sendMessage() {
     const input = document.getElementById("chatInput");
     const messages = document.getElementById("chatMessages");
 
@@ -160,15 +160,19 @@ function sendMessage() {
     userMsg.innerText = input.value;
     messages.appendChild(userMsg);
 
-    // Simulate bot response
-    setTimeout(() => {
-        const botMsg = document.createElement("div");
-        botMsg.className = "chat-message bot";
-        botMsg.innerText =
-            "🤖 Suggestion: Check the temperature sensor or change the engine oil.";
-        messages.appendChild(botMsg);
-        messages.scrollTop = messages.scrollHeight;
-    }, 800);
+    // Gọi Flask server
+    let responsechat = await fetch(`http://${baseURL}:5000/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input.value }),
+    });
+
+    const data = await responsechat.json();
+
+    const botMsg = document.createElement("div");
+    botMsg.className = "chat-message bot";
+    botMsg.innerText = data.reply || "❌ Lỗi khi gọi Gemini.";
+    messages.appendChild(botMsg);
 
     input.value = "";
     messages.scrollTop = messages.scrollHeight;

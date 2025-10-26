@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
+import google.generativeai as genai
+genai.configure(api_key="AIzaSyCePHV2RmVMBTfKvNXhJNr8WIkQvHSD7zc")
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 CORS(app)
@@ -83,6 +85,18 @@ def analyze_get():
         return jsonify({"error": "Chưa có dữ liệu nào từ simulator"}), 400
     return jsonify(latest_data)
 
+@app.route("/chat", methods=["POST"])
+def chat():
+    user_input = request.get_json().get("message", "")
+
+    if not user_input:
+        return jsonify({"error": "No message provided"}), 400
+
+    model = genai.GenerativeModel("gemini-2.5-flash")
+
+    response = model.generate_content(user_input)
+
+    return jsonify({"reply": response.text})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
