@@ -178,6 +178,83 @@ async function sendMessage() {
     messages.scrollTop = messages.scrollHeight;
 }
 
+// XÓA TOÀN BỘ HÀM NÀY (hàm login cứng)
+/*
+function login() {
+    const user = ...
+    ...
+    window.location.href = "/dashboard";
+}
+*/
+
+// GIỮ LẠI VÀ SỬA HÀM NÀY (dùng fetch)
+async function login() {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const msg = document.getElementById("loginMessage");
+
+    if (!username || !password) {
+        msg.style.color = "red";
+        msg.textContent = "Vui lòng nhập đầy đủ!";
+        return;
+    }
+
+    try {
+        const res = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+            credentials: "include", // ← Quan trọng: gửi session cookie
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            msg.style.color = "lime";
+            msg.textContent = "Đăng nhập thành công!";
+            setTimeout(() => {
+                window.location.reload(); // ← TẢI LẠI TRANG → session được áp dụng
+            }, 800);
+        } else {
+            msg.style.color = "red";
+            msg.textContent = data.message || "Lỗi đăng nhập";
+        }
+    } catch (e) {
+        msg.style.color = "red";
+        msg.textContent = "Lỗi kết nối server!";
+    }
+}
+
+async function updateAuthButton() {
+    const btn = document.getElementById("authBtn");
+
+    const res = await fetch("/me", { credentials: "include" });
+    const data = await res.json();
+
+    if (data.logged_in) {
+        btn.textContent = "Log out";
+        btn.onclick = logout;
+    } else {
+        btn.textContent = "Log in";
+        btn.onclick = openLoginModal;
+    }
+}
+
+async function logout() {
+    await fetch("/logout", { credentials: "include" });
+    window.location.reload();
+}
+
+// chạy khi trang load
+updateAuthButton();
+function openLoginModal() {
+    document.getElementById("loginModal").style.display = "flex";
+}
+
+function closeLoginModal() {
+    document.getElementById("loginModal").style.display = "none";
+}
+
 // Auto update data
 setInterval(getData, 5000);
 getData();

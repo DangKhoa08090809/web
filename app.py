@@ -1,21 +1,19 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, session, redirect, url_for, make_response
 from flask_cors import CORS
 from dotenv import load_dotenv
 import google.generativeai as genai
+import os
+import uuid
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
-CORS(app)
+CORS(app, supports_credentials=True)
+app.secret_key = "your_secret_key_here"  # để Flask lưu session
+
 
 latest_data = {}
-
-# Route chính -> render index.html
-@app.route("/")
-def index():
-    return render_template("index.html")
-
 
 @app.route("/analyze", methods=["POST"])
 def analyze_post():
@@ -84,8 +82,13 @@ def analyze_post():
 
 @app.route("/analyze", methods=["GET"])
 def analyze_get():
+    user_id = request.cookies.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Bạn chưa đăng nhập"}), 403
+
     if not latest_data:
         return jsonify({"error": "Chưa có dữ liệu nào từ simulator"}), 400
+
     return jsonify(latest_data)
 
 @app.route("/chat", methods=["POST"])
@@ -100,6 +103,55 @@ def chat():
     response = model.generate_content(user_input)
 
     return jsonify({"reply": response.text})
+
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+
+    if username == "admin" and password == "1234":
+        # tạo user_id duy nhất
+        user_id = str(uuid.uuid4())
+
+        # tạo response
+        resp = make_response(jsonify({"success": True, "user_id": user_id}))
+
+        # lưu cookie sống 30 ngày
+        resp.set_cookie(
+            "user_id",
+            user_id,
+            max_age=60 * 60 * 24 * 30,  # 30 ngày
+            httponly=True,
+            samesite="Lax"
+        )
+
+        return resp
+
+    return jsonify({"success": False, "message": "Sai tài khoản hoặc mật khẩu"}), 401
+
+@app.route("/logout", methods=["GET"])
+def logout():
+    resp = make_response(jsonify({"success": True}))
+    resp.set_cookie("user_id", "", expires=0)  # xoá cookie
+    return resp
+
+@app.route("/")
+def index():
+    user_id = request.cookies.get("user_id")
+
+    logged_in = user_id is not None
+
+    return render_template("index.html", logged_in=logged_in)
+
+@app.route("/me", methods=["GET"])
+def me():
+    user_id = request.cookies.get("user_id")
+
+    if user_id:
+        return jsonify({"logged_in": True, "user_id": user_id})
+
+    return jsonify({"logged_in": False})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

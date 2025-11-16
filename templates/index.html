@@ -15,7 +15,37 @@
             <button>Feedback</button>
             <button>Help</button>
             <button>Setting</button>
-            <button>About System</button>
+            <button id="authBtn" onclick="openLoginModal()">Log in</button>
+        </div>
+
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🔐 User Login</h2>
+                    <span class="close" onclick="closeLoginModal()"
+                        >&times;</span
+                    >
+                </div>
+                <div class="modal-body">
+                    <input
+                        type="text"
+                        id="username"
+                        placeholder="👤 Username"
+                    />
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="🔑 Password"
+                    />
+                    <button onclick="login()">Log in</button>
+                    <p
+                        id="loginMessage"
+                        style="margin-top: 10px; color: red"
+                    ></p>
+                    <p>if you don't have any account? Let's sign up</p>
+                    <button>sign up</button>
+                </div>
+            </div>
         </div>
 
         <div>
